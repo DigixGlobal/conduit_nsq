@@ -41,6 +41,7 @@ defmodule Nascent do
 
     children = [
       worker(Nascent.MessageProcessor, [nil]),
+      {Nascent.ProducerGroup, [broker, topology, opts]},
       {Nascent.ConsumerGroup, [broker, subscribers, opts]}
     ]
 

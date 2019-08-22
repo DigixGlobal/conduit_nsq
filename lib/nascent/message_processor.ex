@@ -40,7 +40,7 @@ defmodule Nascent.MessageProcessor do
     @queue_name
     |> Honeydew.start_workers(
       Worker,
-      num: 3
+      num: 10
     )
 
     {:ok, nil}

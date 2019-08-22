@@ -1,7 +1,8 @@
 defmodule Nascent.ConsumerGroup do
   @moduledoc """
-  Manages Consumers
+  Manages consumers
   """
+
   use Supervisor
 
   def child_spec([broker, _, _] = args) do
@@ -12,7 +13,6 @@ defmodule Nascent.ConsumerGroup do
     }
   end
 
-  @doc false
   def start_link(broker, subscribers, opts) do
     Supervisor.start_link(
       __MODULE__,
@@ -21,7 +21,6 @@ defmodule Nascent.ConsumerGroup do
     )
   end
 
-  @doc false
   @impl true
   def init([broker, subscribers, opts]) do
     children =
@@ -33,8 +32,7 @@ defmodule Nascent.ConsumerGroup do
     Supervisor.init(children, strategy: :one_for_one)
   end
 
-  @doc false
-  def name(broker) do
+  defp name(broker) do
     Module.concat(broker, Adapter.ConsumerGroup)
   end
 end

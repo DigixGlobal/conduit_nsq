@@ -2,6 +2,7 @@ defmodule Nascent.Consumer do
   @moduledoc """
   Starts consumers for each topic
   """
+
   use Supervisor
 
   alias Conduit.Message
@@ -10,6 +11,14 @@ defmodule Nascent.Consumer do
   alias NSQ
 
   alias Nascent.MessageProcessor
+
+  def start_link(broker, name, sub_opts, opts) do
+    Supervisor.start_link(
+      __MODULE__,
+      [broker, name, sub_opts, opts],
+      name: name(broker, name)
+    )
+  end
 
   def child_spec([broker, name, sub_opts, opts]) do
     topic = Keyword.fetch!(sub_opts, :topic)
@@ -56,12 +65,7 @@ defmodule Nascent.Consumer do
     }
   end
 
-  @doc false
-  def start_link(broker, name, sub_opts, opts) do
-    Supervisor.start_link(__MODULE__, [broker, name, sub_opts, opts])
-  end
-
-  def name(broker, name) do
+  defp name(broker, name) do
     {Module.concat(broker, Adapter.Consumer), name}
   end
 end
