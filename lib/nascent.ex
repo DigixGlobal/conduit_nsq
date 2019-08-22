@@ -1,18 +1,58 @@
 defmodule Nascent do
   @moduledoc """
-  Documentation for Nascent.
+  Implements the Conduit adapter interface for NSQ
   """
+
+  require Logger
+
+  use Conduit.Adapter
+  use Supervisor
+
+  alias Nascent.NSQ
+
+  def child_spec([broker, _, _, _] = args) do
+    %{
+      id: name(broker),
+      start: {__MODULE__, :start_link, args},
+      type: :supervisor
+    }
+  end
 
   @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> Nascent.hello()
-      :world
-
+  Implents Conduit.Adapter.start_link/4 callback
   """
-  def hello do
-    :world
+  @impl true
+  def start_link(broker, topology, subscribers, opts) do
+    # OptionValidator.validate!(topology, subscribers, opts)
+
+    Supervisor.start_link(
+      __MODULE__,
+      [broker, topology, subscribers, opts],
+      name: name(broker)
+    )
+  end
+
+  @doc false
+  @impl true
+  def init([broker, topology, subscribers, opts]) do
+    Logger.info("NSQ Adapter started!")
+
+    children = [
+      {Nascent.ConsumerGroup, [broker, subscribers, opts]}
+    ]
+
+    Supervisor.init(children, strategy: :one_for_one)
+  end
+
+  @doc """
+  Implents Conduit.Adapter.publish/3 callback
+  """
+  @impl true
+  def publish(message, config, opts) do
+    NSQ.publish(message, config, opts)
+  end
+
+  defp name(broker) do
+    Module.concat(broker, Adapter)
   end
 end
