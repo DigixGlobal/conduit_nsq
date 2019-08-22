@@ -26,9 +26,9 @@ defmodule Nascent.Consumer do
               "127.0.0.1:13150",
               "127.0.0.1:14150"
             ],
-            # nsqlookupds: ["127.0.0.1:12161"],
+            nsqlookupds: ["127.0.0.1:12161"],
             message_handler: fn msg, body ->
-              message = %Message{body: Jason.decode!(msg)}
+              message = %Message{body: msg}
 
               case broker.receives(name, message) do
                 %Message{status: :ack} ->
