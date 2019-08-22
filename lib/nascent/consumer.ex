@@ -6,7 +6,10 @@ defmodule Nascent.Consumer do
 
   alias Conduit.Message
   alias Jason
+  alias Honeydew
   alias NSQ
+
+  alias Nascent.MessageProcessor
 
   def child_spec([broker, name, sub_opts, opts]) do
     topic = Keyword.fetch!(sub_opts, :topic)
@@ -30,14 +33,21 @@ defmodule Nascent.Consumer do
             message_handler: fn msg, body ->
               message = %Message{body: msg}
 
-              case broker.receives(name, message) do
-                %Message{status: :ack} ->
-                  :ok
+              timeout =
+                body
+                |> Map.fetch!(:config)
+                |> Map.fetch!(:msg_timeout)
 
-                %Message{status: :nack} ->
+              broker
+              |> MessageProcessor.process_message(name, message)
+              |> Honeydew.yield(timeout)
+              |> case do
+                nil ->
                   :req
-              end
 
+                {:ok, reply} ->
+                  reply
+              end
             end
           }
         ]

@@ -10,6 +10,7 @@ defmodule Nascent.Message do
     %Message{}
     |> put_source(queue)
     |> put_body(message)
+
     # |> put_header("request_id", request_id)
     # |> put_header("md5_of_body", md5)
     # |> put_header("receipt_handle", handle)

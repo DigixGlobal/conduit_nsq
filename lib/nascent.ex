@@ -35,9 +35,12 @@ defmodule Nascent do
   @doc false
   @impl true
   def init([broker, topology, subscribers, opts]) do
+    import Supervisor.Spec
+
     Logger.info("NSQ Adapter started!")
 
     children = [
+      worker(Nascent.MessageProcessor, [nil]),
       {Nascent.ConsumerGroup, [broker, subscribers, opts]}
     ]
 

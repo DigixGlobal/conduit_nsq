@@ -20,9 +20,10 @@ defmodule Nascent.MixProject do
 
   defp deps do
     [
-      {:conduit, "~> 0.12.0"},
+      {:conduit, "0.12.10"},
       {:elixir_nsq, "~> 1.1.0"},
-      {:jason, "~> 1.1"},
+      {:honeydew, "~> 1.4.4"},
+      {:jason, "~> 1.1.0", optional: true},
       {:credo, "~> 1.1.0", only: [:dev, :test], runtime: false}
     ]
   end

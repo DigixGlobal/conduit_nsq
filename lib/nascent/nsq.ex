@@ -26,7 +26,6 @@ defmodule Nascent.NSQ do
     NSQ.Producer.pub(p1, message.body)
   end
 
-
   defp request_opts(opts),
     do: Keyword.take(opts, [:region, :base_backoff_in_ms, :max_backoff_in_ms, :max_attempts])
 end
