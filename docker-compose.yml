@@ -1,0 +1,49 @@
+version: '3.1'
+services:
+  lookup1:
+    image: nsqio/nsq
+    restart: always
+    network_mode: host
+    command: /nsqlookupd --broadcast-address localhost --tcp-address=0.0.0.0:12160 --http-address=0.0.0.0:12161
+    ports:
+      - "12160:12160"
+      - "12161:12161"
+  queue1:
+    image: nsqio/nsq
+    restart: always
+    network_mode: host
+    command: /nsqd --broadcast-address localhost --lookupd-tcp-address=127.0.0.1:12160 --tcp-address=0.0.0.0:12150 --http-address=0.0.0.0:12151
+    depends_on:
+      - lookup1
+    ports:
+      - "12150:12150"
+      - "12151:12151"
+  queue2:
+    image: nsqio/nsq
+    restart: always
+    network_mode: host
+    command: /nsqd --broadcast-address localhost --lookupd-tcp-address=127.0.0.1:12160 --tcp-address=0.0.0.0:13150 --http-address=0.0.0.0:13151
+    depends_on:
+      - lookup1
+    ports:
+      - "13150:13150"
+      - "13151:13151"
+  queue3:
+    image: nsqio/nsq
+    restart: always
+    network_mode: host
+    command: /nsqd --broadcast-address localhost --lookupd-tcp-address=127.0.0.1:12160 --tcp-address=0.0.0.0:14150 --http-address=0.0.0.0:14151
+    depends_on:
+      - lookup1
+    ports:
+      - "14150:14150"
+      - "14151:14151"
+  admin1:
+    image: nsqio/nsq
+    restart: always
+    network_mode: host
+    command: /nsqadmin --lookupd-http-address=127.0.0.1:12161 --http-address=0.0.0.0:12171
+    depends_on:
+      - lookup1
+    ports:
+      - "12171:12171"
