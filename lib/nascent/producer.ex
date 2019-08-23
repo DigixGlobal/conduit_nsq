@@ -5,7 +5,7 @@ defmodule Nascent.Producer do
 
   use GenServer
 
-  alias NSQ.Producer, as: Client
+  alias Nascent.MessagePublisher
 
   defmodule State do
     defstruct [:broker, :name, :pid]
@@ -47,9 +47,13 @@ defmodule Nascent.Producer do
   @impl true
   def handle_call({:publish, topic, message}, _from, %State{name: name, pid: pid} = state) do
     if topic == name  do
-      {:ok, "OK"} = Client.pub(pid, message)
-
-      {:reply, :sent, state}
+      pid
+      |> MessagePublisher.publish_message(message)
+      |> Honeydew.yield(60_000)
+      |> case do
+           {:ok, :sent} ->
+             {:reply, :sent, state}
+         end
     else
       {:reply, :ignored, state}
     end

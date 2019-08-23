@@ -1,25 +1,25 @@
-defmodule Nascent.MessageProcessor do
+defmodule Nascent.MessagePublisher do
   @moduledoc """
-  Handles messages in a queue
+  Publishes messages in a queue
   """
 
   use GenServer
 
-  @queue_name :message_processor
+  @queue_name :message_publisher
 
   defmodule Worker do
     @behaviour Honeydew.Worker
 
-    alias Conduit.Message
+    alias NSQ.Producer, as: Client
 
-    def run(broker, name, message) do
-      case broker.receives(name, message) do
-        %Message{status: :ack} ->
-          :ok
-
-        %Message{status: :nack} ->
-          :req
+    def run(pid, message) do
+      case Client.pub(pid, message) do
+        {:ok, "OK"} ->
+          :sent
+        error ->
+          error
       end
+
     end
   end
 
@@ -40,15 +40,15 @@ defmodule Nascent.MessageProcessor do
     @queue_name
     |> Honeydew.start_workers(
       Worker,
-      num: 10
+      num: 5
     )
 
     {:ok, nil}
   end
 
-  def process_message(broker, name, message) do
+  def publish_message(pid, message) do
     Honeydew.async(
-      {:run, [broker, name, message]},
+      {:run, [pid, message]},
       @queue_name,
       reply: true
     )
