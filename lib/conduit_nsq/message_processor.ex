@@ -35,8 +35,7 @@ defmodule ConduitNSQ.MessageProcessor do
     |> Honeydew.start_queue(
       failure_mode: {
         Honeydew.FailureMode.ExponentialRetry,
-        times: 3,
-        base: 2
+        times: 3, base: 2
       }
     )
 

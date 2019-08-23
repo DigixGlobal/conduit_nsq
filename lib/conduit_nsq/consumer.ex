@@ -35,18 +35,19 @@ defmodule ConduitNSQ.Consumer do
       |> MessageProcessor.process_message(name, message)
       |> Honeydew.yield(timeout)
       |> case do
-           nil ->
-             :req
+        nil ->
+          :req
 
-           {:ok, reply} ->
-             reply
-         end
+        {:ok, reply} ->
+          reply
+      end
     end
 
-    config = base_opts
-    |> Enum.into(%{})
-    |> Map.merge(%{message_handler: handler})
-    |> (&struct(NSQ.Config, &1)).()
+    config =
+      base_opts
+      |> Enum.into(%{})
+      |> Map.merge(%{message_handler: handler})
+      |> (&struct(NSQ.Config, &1)).()
 
     %{
       id: name(broker, name),

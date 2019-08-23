@@ -27,7 +27,7 @@ defmodule ConduitNSQ.ProducerGroup do
   def init([broker, topology, opts]) do
     children =
       topology
-      |> Enum.filter(&(match?({:queue, _, _}, &1)))
+      |> Enum.filter(&match?({:queue, _, _}, &1))
       |> Enum.map(fn {:queue, name, sub_opts} ->
         {Producer, [broker, name, sub_opts, opts]}
       end)
@@ -51,18 +51,21 @@ defmodule ConduitNSQ.ProducerGroup do
       case Producer.publish(pid, topic, message, timeout) do
         :sent ->
           {:halt, :sent}
+
         :ignored ->
           {:cont, :ignored}
       end
     end)
     |> case do
-         :sent ->
-           {:ok, :sent}
-         :ignored ->
-           {:error, :ignored}
-         :unsent ->
-           {:error, :unsent}
-       end
+      :sent ->
+        {:ok, :sent}
+
+      :ignored ->
+        {:error, :ignored}
+
+      :unsent ->
+        {:error, :unsent}
+    end
   end
 
   defp name(broker) do

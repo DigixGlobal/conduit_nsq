@@ -16,10 +16,10 @@ defmodule ConduitNSQ.MessagePublisher do
       case Client.pub(pid, message) do
         {:ok, "OK"} ->
           :sent
+
         error ->
           error
       end
-
     end
   end
 
@@ -35,8 +35,7 @@ defmodule ConduitNSQ.MessagePublisher do
     |> Honeydew.start_queue(
       failure_mode: {
         Honeydew.FailureMode.ExponentialRetry,
-        times: 3,
-        base: 2
+        times: 3, base: 2
       }
     )
 

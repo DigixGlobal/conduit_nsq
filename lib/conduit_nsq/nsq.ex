@@ -17,5 +17,4 @@ defmodule ConduitNSQ.NSQ do
 
     ProducerGroup.publish(broker, topic, body)
   end
-
 end

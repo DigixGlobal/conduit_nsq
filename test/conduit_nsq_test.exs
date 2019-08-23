@@ -8,7 +8,7 @@ defmodule ConduitNSQTest do
       NSQ.Producer.Supervisor.start_link(
         "my-topic-C",
         %NSQ.Config{
-          nsqds: ["127.0.0.1:12150", "127.0.0.1:13150", "127.0.0.1:14150" ],
+          nsqds: ["127.0.0.1:12150", "127.0.0.1:13150", "127.0.0.1:14150"],
           nsqlookupds: ["127.0.0.1:12161"]
         }
       )

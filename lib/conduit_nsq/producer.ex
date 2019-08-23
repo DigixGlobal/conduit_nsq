@@ -31,10 +31,11 @@ defmodule ConduitNSQ.Producer do
   def init([broker, name, _sub_opts, _opts]) do
     base_opts = Application.fetch_env!(:conduit_nsq, ConduitNSQ.Config)
 
-    config = base_opts
-    |> Enum.into(%{})
-    |> Map.merge(%{})
-    |> (&struct(NSQ.Config, &1)).()
+    config =
+      base_opts
+      |> Enum.into(%{})
+      |> Map.merge(%{})
+      |> (&struct(NSQ.Config, &1)).()
 
     {:ok, pid} = NSQ.Producer.Supervisor.start_link(name, config)
 
@@ -42,15 +43,19 @@ defmodule ConduitNSQ.Producer do
   end
 
   @impl true
-  def handle_call({:publish, topic, message, timeout}, _from, %State{name: name, pid: pid} = state) do
-    if topic == name  do
+  def handle_call(
+        {:publish, topic, message, timeout},
+        _from,
+        %State{name: name, pid: pid} = state
+      ) do
+    if topic == name do
       pid
       |> MessagePublisher.publish_message(message)
       |> Honeydew.yield(timeout)
       |> case do
-           {:ok, :sent} ->
-             {:reply, :sent, state}
-         end
+        {:ok, :sent} ->
+          {:reply, :sent, state}
+      end
     else
       {:reply, :ignored, state}
     end

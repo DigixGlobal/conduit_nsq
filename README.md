@@ -1,3 +1,3 @@
 # ConduitNSQ
 
-A simple design architecture for using [elixir_nsq](https://github.com/wistia/elixir_nsq).
+A (NSQ)[https://nsq.io/] adapter for [conduit](https://github.com/conduitframework/conduit).
