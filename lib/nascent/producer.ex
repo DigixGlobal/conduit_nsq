@@ -28,7 +28,7 @@ defmodule Nascent.Producer do
   end
 
   @impl true
-  def init([broker, name, sub_opts, opts]) do
+  def init([broker, name, _sub_opts, _opts]) do
     base_opts = Application.fetch_env!(:nascent, Nascent.Config)
 
     config = base_opts
@@ -42,11 +42,11 @@ defmodule Nascent.Producer do
   end
 
   @impl true
-  def handle_call({:publish, topic, message}, _from, %State{name: name, pid: pid} = state) do
+  def handle_call({:publish, topic, message, timeout}, _from, %State{name: name, pid: pid} = state) do
     if topic == name  do
       pid
       |> MessagePublisher.publish_message(message)
-      |> Honeydew.yield(60_000)
+      |> Honeydew.yield(timeout)
       |> case do
            {:ok, :sent} ->
              {:reply, :sent, state}
@@ -56,8 +56,8 @@ defmodule Nascent.Producer do
     end
   end
 
-  def publish(pid, topic, message, timeout \\ 60_000) do
-    GenServer.call(pid, {:publish, topic, message}, timeout)
+  def publish(pid, topic, message, timeout \\ :infinity) do
+    GenServer.call(pid, {:publish, topic, message, timeout}, timeout)
   end
 
   defp name(broker, name) do

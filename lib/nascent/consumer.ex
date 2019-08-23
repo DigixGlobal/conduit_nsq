@@ -20,19 +20,16 @@ defmodule Nascent.Consumer do
     )
   end
 
-  def child_spec([broker, name, sub_opts, opts]) do
+  def child_spec([broker, name, sub_opts, _opts]) do
     base_opts = Application.fetch_env!(:nascent, Nascent.Config)
 
     topic = Keyword.fetch!(sub_opts, :topic)
     channel = Keyword.get(sub_opts, :channel, "")
 
+    timeout = Application.get_env(:nascent, :process_timeout, 60_000)
+
     handler = fn msg, body ->
       message = %Message{body: msg}
-
-      timeout =
-        body
-        |> Map.fetch!(:config)
-        |> Map.fetch!(:msg_timeout)
 
       broker
       |> MessageProcessor.process_message(name, message)
@@ -64,6 +61,11 @@ defmodule Nascent.Consumer do
       },
       type: :worker
     }
+  end
+
+  @impl true
+  def init(_opts) do
+    {:ok, nil}
   end
 
   defp name(broker, name) do

@@ -28,7 +28,9 @@ defmodule Nascent.MessagePublisher do
   end
 
   @impl true
-  def init(_arg) do
+  def init(opts) do
+    workers = Keyword.get(opts, :publisher_workers, 5)
+
     @queue_name
     |> Honeydew.start_queue(
       failure_mode: {
@@ -39,7 +41,7 @@ defmodule Nascent.MessagePublisher do
     )
 
     @queue_name
-    |> Honeydew.start_workers(Worker, num: 5)
+    |> Honeydew.start_workers(Worker, num: workers)
 
     {:ok, nil}
   end

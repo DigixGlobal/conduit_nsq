@@ -42,11 +42,13 @@ defmodule Nascent.ProducerGroup do
     |> Enum.map(&elem(&1, 1))
   end
 
-  def publish(broker, topic, message, timeout \\ 60_000) do
+  def publish(broker, topic, message) do
+    timeout = Application.get_env(:nascent, :publish_timeout, 60_000)
+
     broker
     |> producers()
     |> Enum.reduce_while(:unsent, fn pid, _acc ->
-      case Producer.publish(pid, topic, message) do
+      case Producer.publish(pid, topic, message, timeout) do
         :sent ->
           {:halt, :sent}
         :ignored ->

@@ -12,10 +12,7 @@ defmodule Nascent.MixProject do
   end
 
   def application do
-    [
-      extra_applications: [:logger],
-      mod: {Nascent.Application, []}
-    ]
+    [extra_applications: [:logger]]
   end
 
   defp deps do

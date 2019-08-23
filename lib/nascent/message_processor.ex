@@ -28,7 +28,9 @@ defmodule Nascent.MessageProcessor do
   end
 
   @impl true
-  def init(_arg) do
+  def init(opts) do
+    workers = Keyword.get(opts, :processor_workers, 10)
+
     @queue_name
     |> Honeydew.start_queue(
       failure_mode: {
@@ -41,7 +43,7 @@ defmodule Nascent.MessageProcessor do
     @queue_name
     |> Honeydew.start_workers(
       Worker,
-      num: 10
+      num: workers
     )
 
     {:ok, nil}

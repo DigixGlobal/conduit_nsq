@@ -13,13 +13,10 @@ defmodule Nascent.NSQ do
   Converts a Conduit message to an SQS message and publishes it
   """
   def publish(broker, %Message{body: body}, config, opts) do
-    request_opts = Keyword.merge(config, request_opts(opts))
-
+    IO.inspect(config)
     topic = Keyword.fetch!(opts, :topic)
 
     ProducerGroup.publish(broker, topic, body)
   end
 
-  defp request_opts(opts),
-    do: Keyword.take(opts, [:region, :base_backoff_in_ms, :max_backoff_in_ms, :max_attempts])
 end

@@ -40,8 +40,8 @@ defmodule Nascent do
     Logger.info("NSQ Adapter started!")
 
     children = [
-      worker(Nascent.MessageProcessor, [nil]),
-      worker(Nascent.MessagePublisher, [nil]),
+      worker(Nascent.MessageProcessor, [opts]),
+      worker(Nascent.MessagePublisher, [opts]),
       {Nascent.ProducerGroup, [broker, topology, opts]},
       {Nascent.ConsumerGroup, [broker, subscribers, opts]}
     ]
