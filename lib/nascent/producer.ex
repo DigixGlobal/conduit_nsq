@@ -29,18 +29,14 @@ defmodule Nascent.Producer do
 
   @impl true
   def init([broker, name, sub_opts, opts]) do
-    {:ok, pid} = NSQ.Producer.Supervisor.start_link(
-      name,
-      %NSQ.Config{
-        nsqds: [
-          "127.0.0.1:12150",
-          "127.0.0.1:13150",
-          "127.0.0.1:14150"
-        ],
-        nsqlookupds: ["127.0.0.1:12161"],
-        backoff_multiplier: 5_000
-      }
-    )
+    base_opts = Application.fetch_env!(:nascent, Nascent.Config)
+
+    config = base_opts
+    |> Enum.into(%{})
+    |> Map.merge(%{})
+    |> (&struct(NSQ.Config, &1)).()
+
+    {:ok, pid} = NSQ.Producer.Supervisor.start_link(name, config)
 
     {:ok, %State{broker: broker, name: name, pid: pid}}
   end

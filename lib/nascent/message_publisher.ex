@@ -39,10 +39,7 @@ defmodule Nascent.MessagePublisher do
     )
 
     @queue_name
-    |> Honeydew.start_workers(
-      Worker,
-      num: 5
-    )
+    |> Honeydew.start_workers(Worker, num: 5)
 
     {:ok, nil}
   end

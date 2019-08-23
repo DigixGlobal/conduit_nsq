@@ -21,8 +21,35 @@ defmodule Nascent.Consumer do
   end
 
   def child_spec([broker, name, sub_opts, opts]) do
+    base_opts = Application.fetch_env!(:nascent, Nascent.Config)
+
     topic = Keyword.fetch!(sub_opts, :topic)
     channel = Keyword.get(sub_opts, :channel, "")
+
+    handler = fn msg, body ->
+      message = %Message{body: msg}
+
+      timeout =
+        body
+        |> Map.fetch!(:config)
+        |> Map.fetch!(:msg_timeout)
+
+      broker
+      |> MessageProcessor.process_message(name, message)
+      |> Honeydew.yield(timeout)
+      |> case do
+           nil ->
+             :req
+
+           {:ok, reply} ->
+             reply
+         end
+    end
+
+    config = base_opts
+    |> Enum.into(%{})
+    |> Map.merge(%{message_handler: handler})
+    |> (&struct(NSQ.Config, &1)).()
 
     %{
       id: name(broker, name),
@@ -32,34 +59,7 @@ defmodule Nascent.Consumer do
         [
           topic,
           channel,
-          %NSQ.Config{
-            nsqds: [
-              "127.0.0.1:12150",
-              "127.0.0.1:13150",
-              "127.0.0.1:14150"
-            ],
-            nsqlookupds: ["127.0.0.1:12161"],
-            backoff_multiplier: 2_000,
-            message_handler: fn msg, body ->
-              message = %Message{body: msg}
-
-              timeout =
-                body
-                |> Map.fetch!(:config)
-                |> Map.fetch!(:msg_timeout)
-
-              broker
-              |> MessageProcessor.process_message(name, message)
-              |> Honeydew.yield(timeout)
-              |> case do
-                nil ->
-                  :req
-
-                {:ok, reply} ->
-                  reply
-              end
-            end
-          }
+          config
         ]
       },
       type: :worker
