@@ -39,6 +39,7 @@ defmodule Nascent.Consumer do
               "127.0.0.1:14150"
             ],
             nsqlookupds: ["127.0.0.1:12161"],
+            backoff_multiplier: 2_000,
             message_handler: fn msg, body ->
               message = %Message{body: msg}
 

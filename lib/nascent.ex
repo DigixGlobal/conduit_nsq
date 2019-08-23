@@ -55,7 +55,7 @@ defmodule Nascent do
   @impl true
   def publish(broker, message, config, opts) do
     NSQ.publish(broker, message, config, opts)
-   end
+  end
 
   defp name(broker) do
     Module.concat(broker, Adapter)

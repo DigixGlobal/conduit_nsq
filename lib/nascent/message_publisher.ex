@@ -32,8 +32,9 @@ defmodule Nascent.MessagePublisher do
     @queue_name
     |> Honeydew.start_queue(
       failure_mode: {
-        Honeydew.FailureMode.Retry,
-        times: 3
+        Honeydew.FailureMode.ExponentialRetry,
+        times: 3,
+        base: 2
       }
     )
 
