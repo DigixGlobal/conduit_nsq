@@ -52,9 +52,9 @@ defmodule Nascent do
   Implents Conduit.Adapter.publish/3 callback
   """
   @impl true
-  def publish(message, config, opts) do
-    NSQ.publish(message, config, opts)
-  end
+  def publish(broker, message, config, opts) do
+    NSQ.publish(broker, message, config, opts)
+   end
 
   defp name(broker) do
     Module.concat(broker, Adapter)

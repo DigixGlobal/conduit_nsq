@@ -5,6 +5,8 @@ defmodule Nascent.ProducerGroup do
 
   use Supervisor
 
+  alias Nascent.Producer
+
   def start_link(broker, subscribers, opts) do
     Supervisor.start_link(
       __MODULE__,
@@ -25,12 +27,40 @@ defmodule Nascent.ProducerGroup do
   def init([broker, topology, opts]) do
     children =
       topology
-      |> Enum.filter(&(elem(&1, 0) == :queue))
+      |> Enum.filter(&(match?({:queue, _, _}, &1)))
       |> Enum.map(fn {:queue, name, sub_opts} ->
-        {Nascent.Producer, [broker, name, sub_opts, opts]}
+        {Producer, [broker, name, sub_opts, opts]}
       end)
 
     Supervisor.init(children, strategy: :one_for_one)
+  end
+
+  def producers(broker) do
+    broker
+    |> name()
+    |> Supervisor.which_children()
+    |> Enum.map(&elem(&1, 1))
+  end
+
+  def publish(broker, topic, message, timeout \\ 60_000) do
+    broker
+    |> producers()
+    |> Enum.reduce_while(:unsent, fn pid, _acc ->
+      case Producer.publish(pid, topic, message) do
+        :sent ->
+          {:halt, :sent}
+        :ignored ->
+          {:cont, :ignored}
+      end
+    end)
+    |> case do
+         :sent ->
+           {:ok, :sent}
+         :ignored ->
+           {:error, :ignored}
+         :unsent ->
+           {:error, :unsent}
+       end
   end
 
   defp name(broker) do

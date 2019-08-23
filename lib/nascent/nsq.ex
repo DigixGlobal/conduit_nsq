@@ -7,23 +7,17 @@ defmodule Nascent.NSQ do
   alias Conduit.Message
   alias Jason
 
+  alias Nascent.{ProducerGroup}
+
   @doc """
   Converts a Conduit message to an SQS message and publishes it
   """
-  def publish(%Message{body: body} = message, config, opts) do
+  def publish(broker, %Message{body: body}, config, opts) do
     request_opts = Keyword.merge(config, request_opts(opts))
 
     topic = Keyword.fetch!(opts, :topic)
 
-    {:ok, p1} =
-      NSQ.Producer.Supervisor.start_link(
-        topic,
-        %NSQ.Config{
-          nsqds: ["127.0.0.1:12150", "127.0.0.1:13150", "127.0.0.1:14150"]
-        }
-      )
-
-    NSQ.Producer.pub(p1, message.body)
+    ProducerGroup.publish(broker, topic, body)
   end
 
   defp request_opts(opts),
