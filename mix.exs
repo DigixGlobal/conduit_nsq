@@ -1,9 +1,9 @@
-defmodule Nascent.MixProject do
+defmodule ConduitNSQ.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :nascent,
+      app: :conduit_nsq,
       version: "0.1.0",
       elixir: "~> 1.9",
       start_permanent: Mix.env() == :prod,

@@ -1,4 +1,4 @@
-defmodule Nascent do
+defmodule ConduitNSQ do
   @moduledoc """
   Implements the Conduit adapter interface for NSQ
   """
@@ -8,7 +8,7 @@ defmodule Nascent do
   use Conduit.Adapter
   use Supervisor
 
-  alias Nascent.NSQ
+  alias ConduitNSQ.NSQ
 
   def child_spec([broker, _, _, _] = args) do
     %{
@@ -40,10 +40,10 @@ defmodule Nascent do
     Logger.info("NSQ Adapter started!")
 
     children = [
-      worker(Nascent.MessageProcessor, [opts]),
-      worker(Nascent.MessagePublisher, [opts]),
-      {Nascent.ProducerGroup, [broker, topology, opts]},
-      {Nascent.ConsumerGroup, [broker, subscribers, opts]}
+      worker(ConduitNSQ.MessageProcessor, [opts]),
+      worker(ConduitNSQ.MessagePublisher, [opts]),
+      {ConduitNSQ.ProducerGroup, [broker, topology, opts]},
+      {ConduitNSQ.ConsumerGroup, [broker, subscribers, opts]}
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

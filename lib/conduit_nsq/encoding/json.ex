@@ -1,4 +1,4 @@
-defmodule Nascent.Encoding.Json do
+defmodule ConduitNSQ.Encoding.Json do
   @moduledoc """
   Simple JSON encoding for messages using `Jason`
   """

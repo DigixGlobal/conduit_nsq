@@ -1,4 +1,4 @@
-defmodule Nascent.MessageProcessor do
+defmodule ConduitNSQ.MessageProcessor do
   @moduledoc """
   Handles messages in a queue
   """

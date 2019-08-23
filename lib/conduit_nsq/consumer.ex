@@ -1,4 +1,4 @@
-defmodule Nascent.Consumer do
+defmodule ConduitNSQ.Consumer do
   @moduledoc """
   Starts consumers for each topic
   """
@@ -10,7 +10,7 @@ defmodule Nascent.Consumer do
   alias Honeydew
   alias NSQ
 
-  alias Nascent.MessageProcessor
+  alias ConduitNSQ.MessageProcessor
 
   def start_link(broker, name, sub_opts, opts) do
     Supervisor.start_link(
@@ -21,12 +21,12 @@ defmodule Nascent.Consumer do
   end
 
   def child_spec([broker, name, sub_opts, _opts]) do
-    base_opts = Application.fetch_env!(:nascent, Nascent.Config)
+    base_opts = Application.fetch_env!(:conduit_nsq, ConduitNSQ.Config)
 
     topic = Keyword.fetch!(sub_opts, :topic)
     channel = Keyword.get(sub_opts, :channel, "")
 
-    timeout = Application.get_env(:nascent, :process_timeout, 60_000)
+    timeout = Application.get_env(:conduit_nsq, :process_timeout, 60_000)
 
     handler = fn msg, body ->
       message = %Message{body: msg}

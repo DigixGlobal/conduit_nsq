@@ -1,11 +1,11 @@
-defmodule Nascent.ProducerGroup do
+defmodule ConduitNSQ.ProducerGroup do
   @moduledoc """
   Manages producers
   """
 
   use Supervisor
 
-  alias Nascent.Producer
+  alias ConduitNSQ.Producer
 
   def start_link(broker, subscribers, opts) do
     Supervisor.start_link(
@@ -43,7 +43,7 @@ defmodule Nascent.ProducerGroup do
   end
 
   def publish(broker, topic, message) do
-    timeout = Application.get_env(:nascent, :publish_timeout, 60_000)
+    timeout = Application.get_env(:conduit_nsq, :publish_timeout, 60_000)
 
     broker
     |> producers()

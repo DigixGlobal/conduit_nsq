@@ -1,4 +1,4 @@
-defmodule Nascent.ConsumerGroup do
+defmodule ConduitNSQ.ConsumerGroup do
   @moduledoc """
   Manages consumers
   """
@@ -26,7 +26,7 @@ defmodule Nascent.ConsumerGroup do
     children =
       subscribers
       |> Enum.map(fn {name, sub_opts} ->
-        {Nascent.Consumer, [broker, name, sub_opts, opts]}
+        {ConduitNSQ.Consumer, [broker, name, sub_opts, opts]}
       end)
 
     Supervisor.init(children, strategy: :one_for_one)

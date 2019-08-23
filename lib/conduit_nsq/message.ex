@@ -1,4 +1,4 @@
-defmodule Nascent.Message do
+defmodule ConduitNSQ.Message do
   @moduledoc """
   Converts a batch of NSQ messages to Conduit messages
   """

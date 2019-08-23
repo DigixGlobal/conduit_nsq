@@ -1,4 +1,4 @@
-defmodule Nascent.MessagePublisher do
+defmodule ConduitNSQ.MessagePublisher do
   @moduledoc """
   Publishes messages in a queue
   """

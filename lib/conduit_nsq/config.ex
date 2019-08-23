@@ -1,4 +1,4 @@
-defmodule Nascent.Config do
+defmodule ConduitNSQ.Config do
   @moduledoc """
   Configuration cascaded to `NSQ.Config`
   """

@@ -1,11 +1,11 @@
-defmodule Nascent.Producer do
+defmodule ConduitNSQ.Producer do
   @moduledoc """
   Starts producer for each topic
   """
 
   use GenServer
 
-  alias Nascent.MessagePublisher
+  alias ConduitNSQ.MessagePublisher
 
   defmodule State do
     defstruct [:broker, :name, :pid]
@@ -29,7 +29,7 @@ defmodule Nascent.Producer do
 
   @impl true
   def init([broker, name, _sub_opts, _opts]) do
-    base_opts = Application.fetch_env!(:nascent, Nascent.Config)
+    base_opts = Application.fetch_env!(:conduit_nsq, ConduitNSQ.Config)
 
     config = base_opts
     |> Enum.into(%{})

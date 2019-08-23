@@ -1,4 +1,4 @@
-defmodule NascentTest do
+defmodule ConduitNSQTest do
   use ExUnit.Case
 
   alias NSQ.Producer
