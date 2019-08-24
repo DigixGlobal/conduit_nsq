@@ -29,12 +29,15 @@ defmodule ConduitNSQ.Producer do
 
   @impl true
   def init([broker, name, _sub_opts, opts]) do
+    nsqds = Keyword.fetch!(opts, :producer_nsqds)
+
     config =
       opts
       |> Enum.into(%{})
       |> Map.merge(%{})
       |> (&struct(NSQ.Config, &1)).()
       |> Map.put(:nsqlookupds, [])
+      |> Map.put(:nsqds, nsqds)
 
     {:ok, pid} = NSQ.Producer.Supervisor.start_link(name, config)
 

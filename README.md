@@ -49,16 +49,30 @@ every option in the following snippet below is passed down to `NSQ.Config`:
 ``` elixir
 config :my_app, MyApp.Broker,
   adapter: ConduitNSQ,
+  producer_nsqds: [
+    "127.0.0.1:12150",
+  ],
   nsqds: [
     "127.0.0.1:12150",
     "127.0.0.1:13150",
     "127.0.0.1:14150"
   ],
-  nsqlookupds: ["127.0.0.1:12161"],
+
+  # AVOID FOR NOW, see warning above
+  # nsqlookupds: ["127.0.0.1:12161"],
+
   backoff_multiplier: 2_000
 ```
 
-Checkout the [list of supported options](https://github.com/wistia/elixir_nsq/blob/master/lib/nsq/config.ex).
+Checkout the [list of supported
+options](https://github.com/wistia/elixir_nsq/blob/master/lib/nsq/config.ex).
+
+
+The only different option is `:producer_nsqds` which is publisher
+specific endpoints than consumer specific endpoints. This option is to
+support the idiomatic strategy of publishing to colocated `nsqds` while
+listening in to external producers. (See [Eliminating
+SPOFs](https://nsq.io/overview/design.html#eliminating-spofs)).
 
 For more adapter specific options:
 
