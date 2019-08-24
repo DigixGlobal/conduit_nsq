@@ -5,7 +5,6 @@ defmodule ConduitNSQ.Consumer do
 
   use Supervisor
 
-  alias Conduit.Message
   alias Jason
   alias Honeydew
   alias NSQ
@@ -27,7 +26,7 @@ defmodule ConduitNSQ.Consumer do
     timeout = Application.get_env(:conduit_nsq, :process_timeout, 60_000)
 
     handler = fn msg, _body ->
-      message = %Message{body: msg}
+      message = ConduitNSQ.NSQ.to_message(msg, name)
 
       broker
       |> MessageProcessor.process_message(name, message)

@@ -48,7 +48,7 @@ defmodule ConduitNSQ do
   end
 
   @doc """
-  Implents Conduit.Adapter.publish/3 callback
+  Implements Conduit.Adapter.publish/3 callback
   """
   @impl true
   def publish(broker, message, config, opts) do

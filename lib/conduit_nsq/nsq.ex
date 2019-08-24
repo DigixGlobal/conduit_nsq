@@ -4,6 +4,7 @@ defmodule ConduitNSQ.NSQ do
   """
   require Logger
 
+  import Conduit.Message
   alias Conduit.Message
   alias Jason
 
@@ -16,5 +17,14 @@ defmodule ConduitNSQ.NSQ do
     topic = Keyword.fetch!(opts, :topic)
 
     ProducerGroup.publish(broker, topic, body)
+  end
+
+  @doc """
+  Converts raw messages into `Conduit.Message`
+  """
+  def to_message(message, queue) do
+    %Message{}
+    |> put_source(queue)
+    |> put_body(message)
   end
 end

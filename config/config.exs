@@ -1,11 +1,5 @@
 import Config
 
-config :conduit_nsq,
-  publisher_workers: 3,
-  processor_workers: 10,
-  publish_timeout: 5000,
-  process_timeout: 5000
-
 if Mix.env() == :test do
   config :conduit, Conduit.Encoding, [
     {"json", ConduitNSQ.Encoding.Json}
