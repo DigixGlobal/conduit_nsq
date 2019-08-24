@@ -1,0 +1,46 @@
+version: 2
+defaults: &defaults
+  branches:
+    only:
+      - master
+      - develop
+      - /feature\/.*/
+  working_directory: ~/conduit_nsq
+  docker:
+    - image: circleci/elixir:1.9.0
+      environment:
+        MIX_ENV: test
+    - image: nsqio/nsq
+      command: /nsqlookupd --broadcast-address localhost --tcp-address=0.0.0.0:12160 --http-address=0.0.0.0:12161
+    - image: nsqio/nsq
+      command: /nsqd --broadcast-address localhost --lookupd-tcp-address=127.0.0.1:12160 --tcp-address=0.0.0.0:12150 --http-address=0.0.0.0:12151
+    - image: nsqio/nsq
+      command: /nsqd --broadcast-address localhost --lookupd-tcp-address=127.0.0.1:12160 --tcp-address=0.0.0.0:13150 --http-address=0.0.0.0:13151
+    - image: nsqio/nsq
+      command: /nsqd --broadcast-address localhost --lookupd-tcp-address=127.0.0.1:12160 --tcp-address=0.0.0.0:14150 --http-address=0.0.0.0:14151
+    - image: nsqio/nsq
+      command: /nsqadmin --lookupd-http-address=127.0.0.1:12161 --http-address=0.0.0.0:12171
+jobs:
+  build:
+    <<: *defaults
+    steps:
+      - checkout
+      - run: mix local.hex --force
+      - run: mix local.rebar --force
+      - name: Restore dependency cache
+        type: cache-restore
+        key: conduit-nsq-{{ checksum "mix.lock" }}
+      - run: mix deps.get
+      - run: mix deps.compile
+      - run: mix compile
+      - name: Store dependency cache
+        type: cache-save
+        key: conduit-nsq-{{ checksum "mix.lock" }}
+        paths:
+          - deps
+      - run:
+          name: Verify Code Format
+          command: mix format --check-formatted
+      - run:
+          name: Verify Spec
+          command: mix espec --cover

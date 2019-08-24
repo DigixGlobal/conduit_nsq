@@ -24,11 +24,11 @@ defmodule ConduitNSQ.Consumer do
     base_opts = Application.fetch_env!(:conduit_nsq, ConduitNSQ.Config)
 
     topic = Keyword.fetch!(sub_opts, :topic)
-    channel = Keyword.get(sub_opts, :channel, "")
+    channel = Keyword.fetch!(sub_opts, :channel)
 
     timeout = Application.get_env(:conduit_nsq, :process_timeout, 60_000)
 
-    handler = fn msg, body ->
+    handler = fn msg, _body ->
       message = %Message{body: msg}
 
       broker

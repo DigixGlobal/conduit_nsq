@@ -12,7 +12,7 @@ services:
     image: nsqio/nsq
     restart: always
     network_mode: host
-    command: /nsqd  --broadcast-address localhost --lookupd-tcp-address=127.0.0.1:12160 --tcp-address=0.0.0.0:12150 --http-address=0.0.0.0:12151
+    command: /nsqd --broadcast-address localhost --lookupd-tcp-address=127.0.0.1:12160 --tcp-address=0.0.0.0:12150 --http-address=0.0.0.0:12151
     depends_on:
       - lookup1
     ports:
@@ -32,7 +32,7 @@ services:
     image: nsqio/nsq
     restart: always
     network_mode: host
-    command: /nsqd  --broadcast-address localhost --lookupd-tcp-address=127.0.0.1:12160 --tcp-address=0.0.0.0:14150 --http-address=0.0.0.0:14151
+    command: /nsqd --broadcast-address localhost --lookupd-tcp-address=127.0.0.1:12160 --tcp-address=0.0.0.0:14150 --http-address=0.0.0.0:14151
     depends_on:
       - lookup1
     ports:
