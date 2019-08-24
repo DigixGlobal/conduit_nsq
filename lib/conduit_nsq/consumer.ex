@@ -20,9 +20,7 @@ defmodule ConduitNSQ.Consumer do
     )
   end
 
-  def child_spec([broker, name, sub_opts, _opts]) do
-    base_opts = Application.fetch_env!(:conduit_nsq, ConduitNSQ.Config)
-
+  def child_spec([broker, name, sub_opts, opts]) do
     topic = Keyword.fetch!(sub_opts, :topic)
     channel = Keyword.fetch!(sub_opts, :channel)
 
@@ -44,7 +42,7 @@ defmodule ConduitNSQ.Consumer do
     end
 
     config =
-      base_opts
+      opts
       |> Enum.into(%{})
       |> Map.merge(%{message_handler: handler})
       |> (&struct(NSQ.Config, &1)).()
@@ -70,6 +68,6 @@ defmodule ConduitNSQ.Consumer do
   end
 
   defp name(broker, name) do
-    {Module.concat(broker, Adapter.Consumer), name}
+    {Module.concat(broker, Consumer), name}
   end
 end

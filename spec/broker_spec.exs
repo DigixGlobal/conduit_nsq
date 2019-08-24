@@ -88,7 +88,7 @@ defmodule BrokerSpec do
     end
 
     it "should publish and receive messages" do
-        ptest([original: choose(from: [list(of: string), string])], [repeat_for: 10]) do
+        ptest([original: choose(from: [list(of: string()), string()])], [repeat_for: 10]) do
           {:ok, :sent} = %Message{}
           |> Message.put_body(original)
           |> Broker.publish(:my_sub)
@@ -102,8 +102,8 @@ defmodule BrokerSpec do
     it "subscribers should receive correct topic messages" do
       ptest(
         [
-          first: choose(from: [list(of: string), string]),
-          second: choose(from: [list(of: string), string]),
+          first: choose(from: [list(of: string()), string()]),
+          second: choose(from: [list(of: string()), string()]),
         ],
         [repeat_for: 10]) do
           {:ok, :sent} = %Message{}
@@ -128,7 +128,7 @@ defmodule BrokerSpec do
 
     it "all subscribers should receive messages from a topic" do
       ptest(
-        [original: choose(from: [list(of: string), string])],
+        [original: choose(from: [list(of: string()), string()])],
         [repeat_for: 10]
       ) do
           {:ok, :sent} = %Message{}

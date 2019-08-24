@@ -28,11 +28,10 @@ defmodule ConduitNSQ.Producer do
   end
 
   @impl true
-  def init([broker, name, _sub_opts, _opts]) do
-    base_opts = Application.fetch_env!(:conduit_nsq, ConduitNSQ.Config)
+  def init([broker, name, _sub_opts, opts]) do
 
     config =
-      base_opts
+      opts
       |> Enum.into(%{})
       |> Map.merge(%{})
       |> (&struct(NSQ.Config, &1)).()
@@ -66,6 +65,6 @@ defmodule ConduitNSQ.Producer do
   end
 
   defp name(broker, name) do
-    {Module.concat(broker, Adapter.Producer), name}
+    {Module.concat(broker, Producer), name}
   end
 end

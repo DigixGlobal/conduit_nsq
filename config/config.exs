@@ -11,11 +11,8 @@ if Mix.env() == :test do
     {"json", ConduitNSQ.Encoding.Json}
   ]
 
-  config :conduit_nsq, ConduitNSQIntegrationTest.Broker, adapter: ConduitNSQ
-
-  config :conduit_nsq, BrokerSpec.Broker, adapter: ConduitNSQ
-
-  config :conduit_nsq, ConduitNSQ.Config,
+  config :conduit_nsq, BrokerSpec.Broker,
+    adapter: ConduitNSQ,
     nsqds: [
       "127.0.0.1:12150",
       "127.0.0.1:13150",

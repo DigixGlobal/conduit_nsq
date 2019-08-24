@@ -12,7 +12,7 @@ defmodule ConduitNSQ do
 
   def child_spec([broker, _, _, _] = args) do
     %{
-      id: name(broker),
+      id: broker,
       start: {__MODULE__, :start_link, args},
       type: :supervisor
     }
@@ -23,8 +23,6 @@ defmodule ConduitNSQ do
   """
   @impl true
   def start_link(broker, topology, subscribers, opts) do
-    # OptionValidator.validate!(topology, subscribers, opts)
-
     Supervisor.start_link(
       __MODULE__,
       [broker, topology, subscribers, opts],

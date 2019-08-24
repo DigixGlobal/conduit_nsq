@@ -33,6 +33,6 @@ defmodule ConduitNSQ.ConsumerGroup do
   end
 
   defp name(broker) do
-    Module.concat(broker, Adapter.ConsumerGroup)
+    Module.concat(broker, ConsumerGroup)
   end
 end
