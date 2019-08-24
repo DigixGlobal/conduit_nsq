@@ -9,6 +9,7 @@ defmodule ConduitNSQ.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       deps: deps(),
+      aliases: aliases(),
       name: "ConduitNQS",
       source_url: "https://github.com/DigixGlobal/conduit_nsq",
       homepage_url: "https://hexdocs.pm/conduit_nsq",
@@ -64,6 +65,12 @@ defmodule ConduitNSQ.MixProject do
       {:espec, "~> 1.7.0", only: :test},
       {:quixir, "~> 0.9", only: :test},
       {:propcheck, "~> 1.1", only: [:test]}
+    ]
+  end
+
+  defp aliases do
+    [
+      test: "espec"
     ]
   end
 end

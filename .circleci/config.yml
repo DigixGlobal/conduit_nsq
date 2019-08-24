@@ -42,5 +42,5 @@ jobs:
           name: Verify Code Format
           command: mix format --check-formatted
       - run:
-          name: Verify Spec
-          command: mix espec --cover
+          name: Verify Test
+          command: mix test
