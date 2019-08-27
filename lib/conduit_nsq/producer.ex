@@ -28,8 +28,13 @@ defmodule ConduitNSQ.Producer do
   end
 
   @impl true
-  def init([broker, name, _sub_opts, opts]) do
+  def init([broker, name, sub_opts, opts]) do
     nsqds = Keyword.fetch!(opts, :producer_nsqds)
+
+    ephemeral_suffix =
+      if Keyword.get(sub_opts, :ephemeral, false),
+        do: "#ephemeral",
+        else: ""
 
     config =
       opts
@@ -39,7 +44,11 @@ defmodule ConduitNSQ.Producer do
       |> Map.put(:nsqlookupds, [])
       |> Map.put(:nsqds, nsqds)
 
-    {:ok, pid} = NSQ.Producer.Supervisor.start_link(name, config)
+    {:ok, pid} =
+      NSQ.Producer.Supervisor.start_link(
+        "#{name}#{ephemeral_suffix}",
+        config
+      )
 
     {:ok, %State{broker: broker, name: name, pid: pid}}
   end

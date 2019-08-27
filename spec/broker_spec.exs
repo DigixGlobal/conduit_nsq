@@ -34,12 +34,23 @@ defmodule BrokerSpec do
     end
   end
 
+  defmodule EphermalSubscriber do
+    use Conduit.Subscriber
+
+    def process(message, _) do
+      send(BrokerSpec, {:ephermal_process, message})
+
+      message
+    end
+  end
+
   defmodule Broker do
     use Conduit.Broker, otp_app: :conduit_nsq
 
     configure do
-      queue "my-topic"
-      queue "other-topic"
+      queue("my-topic")
+      queue("other-topic")
+      queue("ghost-topic", ephemeral: true)
     end
 
     pipeline :input do
@@ -75,6 +86,11 @@ defmodule BrokerSpec do
       subscribe :other_sub, OtherSubscriber,
         topic: "other-topic",
         channel: "channel"
+
+      subscribe :ephermal_sub, EphermalSubscriber,
+        topic: "ghost-topic",
+        channel: "channel",
+        ephemeral: true
     end
   end
 

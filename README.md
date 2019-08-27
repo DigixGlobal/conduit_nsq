@@ -116,6 +116,11 @@ All topics that the application will publish to must be defined here
 since each message is routed to the corresponding
 `NSQ.Producer.Supervisor` otherwise the message might be unsent.
 
+### Options
+
+- `:ephemeral` (Optional: `false`) - Adds `#ephemeral` to the topic to
+  mark it as ephemeral. (See [NSQ Design](https://nsq.io/overview/design.html#bounded-memory-footprint))
+
 ## Configuring a Subscriber
 
 Inside an `incoming` block for a broker, you can define subscriptions to
@@ -142,6 +147,11 @@ receive the messages.
 The only required options are `:topic` and `:channel` which follows
 `NSQ.Consumer.Supervisor`.
 
+- `:topic` - Topic to connect with
+- `:channel` - Topic channel to listen into
+- `:ephemeral` (Optional: `false`) - Adds `#ephemeral` to the channel
+  name to mark it ephemeral. (See [NSQ Design](https://nsq.io/overview/design.html#bounded-memory-footprint))
+
 ## Configuring a Publisher
 
 Inside an `outgoing` block for a broker, you can define publications to topics.
@@ -159,3 +169,5 @@ end
 
 The only required option is `:topic` which follows
 `NSQ.Producer.Supervisor`.
+
+- `:topic` - Topic to publish to

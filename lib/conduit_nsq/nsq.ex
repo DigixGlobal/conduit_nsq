@@ -13,7 +13,7 @@ defmodule ConduitNSQ.NSQ do
   @doc """
   Converts a Conduit message to an SQS message and publishes it
   """
-  def publish(broker, %Message{body: body}, config, opts) do
+  def publish(broker, %Message{body: body}, _config, opts) do
     topic = Keyword.fetch!(opts, :topic)
 
     ProducerGroup.publish(broker, topic, body)
