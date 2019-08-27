@@ -50,7 +50,6 @@ defmodule ConduitNSQ.Consumer do
       |> Enum.into(%{})
       |> Map.merge(%{message_handler: handler})
       |> (&struct(NSQ.Config, &1)).()
-      |> Map.put(:nsqlookupds, [])
 
     %{
       id: name(broker, name),
