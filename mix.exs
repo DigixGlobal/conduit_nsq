@@ -4,8 +4,9 @@ defmodule ConduitNSQ.MixProject do
   def project do
     [
       app: :conduit_nsq,
-      version: "0.1.0",
+      version: "0.1.1",
       elixir: "~> 1.9",
+      elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       aliases: aliases(),
@@ -23,13 +24,30 @@ defmodule ConduitNSQ.MixProject do
     ]
   end
 
-  defp docs do
+  defp elixirc_paths(:test), do: ["lib", "spec"]
+  defp elixirc_paths(_), do: ["lib"]
+
+  def application do
+    [extra_applications: [:logger]]
+  end
+
+  defp deps do
     [
-      main: "readme",
-      project: "ConduitNSQ",
-      extra_section: "Guides",
-      extras: ["README.md"],
-      assets: ["assets"]
+      {:elixir_nsq, "~> 1.1.0"},
+      {:honeydew, "~> 1.4.4"},
+      {:jason, "~> 1.1.0"},
+      {:conduit, "0.12.10"},
+      {:coverex, "~> 1.4.10", only: :test},
+      {:credo, "~> 1.1.0", only: [:dev, :test], runtime: false},
+      {:ex_doc, "~> 0.14", only: :dev, runtime: false},
+      {:espec, "~> 1.7.0", only: :test},
+      {:quixir, "~> 0.9", only: :test}
+    ]
+  end
+
+  defp aliases do
+    [
+      test: "espec"
     ]
   end
 
@@ -46,28 +64,13 @@ defmodule ConduitNSQ.MixProject do
     ]
   end
 
-  def application do
-    [extra_applications: [:logger]]
-  end
-
-  defp deps do
+  defp docs do
     [
-      {:elixir_nsq, "~> 1.1.0"},
-      {:honeydew, "~> 1.4.4"},
-      {:jason, "~> 1.1.0", optional: true},
-      {:conduit, "0.12.10"},
-      {:coverex, "~> 1.4.10", only: :test},
-      {:credo, "~> 1.1.0", only: [:dev, :test], runtime: false},
-      {:ex_doc, "~> 0.14", only: :dev, runtime: false},
-      {:espec, "~> 1.7.0", only: :test},
-      {:quixir, "~> 0.9", only: :test},
-      {:propcheck, "~> 1.1", only: [:test]}
-    ]
-  end
-
-  defp aliases do
-    [
-      test: "espec"
+      main: "readme",
+      project: "ConduitNSQ",
+      extra_section: "Guides",
+      extras: ["README.md"],
+      assets: ["assets"]
     ]
   end
 end

@@ -2,7 +2,7 @@ import Config
 
 if Mix.env() == :test do
   config :conduit, Conduit.Encoding, [
-    {"json", ConduitNSQ.Encoding.Json}
+    {"json", ConduitNSQ.JsonEncoding}
   ]
 
   config :conduit_nsq, BrokerSpec.Broker,

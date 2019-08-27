@@ -22,7 +22,7 @@ The package can be installed by adding `conduit_nsq` to your list of dependencie
 
 ```elixir
 def deps do
-  [{:conduit_nsq, "~> 0.1.0"}]
+  [{:conduit_nsq, "~> 0.1.1"}]
 end
 ```
 
@@ -159,38 +159,3 @@ end
 
 The only required option is `:topic` which follows
 `NSQ.Producer.Supervisor`.
-
-## Serialization
-
-Published and received messages are sent via `NSQ.Producer.pub` as is.
-If you need to make use of JSON serialization with
-`ConduitNSQ.Encoding.Json` via
-[Jason](https://github.com/michalmuskala/jason), add this config:
-
-```elixir
-config :conduit, Conduit.Encoding, [
-  {"json", ConduitNSQ.Encoding.Json}
-]
-```
-
-You can use this via `Conduit.Plug`s like so:
-
-```elixir
-  pipeline :serialize do
-    plug(Conduit.Plug.Wrap)
-    plug(Conduit.Plug.Encode, content_encoding: "json")
-  end
-
-  pipeline :deserialize do
-    plug(Conduit.Plug.Decode, content_encoding: "json")
-    plug(Conduit.Plug.Unwrap)
-  end
-
-  incoming MyApp do
-    pipe_through([:deserialize])
-  end
-
-  outgoing do
-    pipe_through([:serialize])
-  end
-```
