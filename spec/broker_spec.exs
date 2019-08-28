@@ -50,7 +50,7 @@ defmodule BrokerSpec do
     configure do
       queue("my-topic")
       queue("other-topic")
-      queue("ghost-topic", ephemeral: true)
+      queue("ghost-topic#ephemeral")
     end
 
     pipeline :input do
@@ -88,9 +88,8 @@ defmodule BrokerSpec do
         channel: "channel"
 
       subscribe :ephermal_sub, EphermalSubscriber,
-        topic: "ghost-topic",
-        channel: "channel",
-        ephemeral: true
+        topic: "ghost-topic#ephemeral",
+        channel: "channel#ephemeral"
     end
   end
 

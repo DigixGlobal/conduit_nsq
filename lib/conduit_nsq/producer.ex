@@ -31,11 +31,6 @@ defmodule ConduitNSQ.Producer do
   def init([broker, name, sub_opts, opts]) do
     nsqds = Keyword.fetch!(opts, :producer_nsqds)
 
-    ephemeral_suffix =
-      if Keyword.get(sub_opts, :ephemeral, false),
-        do: "#ephemeral",
-        else: ""
-
     config =
       opts
       |> Enum.into(%{})
@@ -46,7 +41,7 @@ defmodule ConduitNSQ.Producer do
 
     {:ok, pid} =
       NSQ.Producer.Supervisor.start_link(
-        "#{name}#{ephemeral_suffix}",
+        name,
         config
       )
 

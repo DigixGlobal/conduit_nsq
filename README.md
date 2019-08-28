@@ -13,16 +13,13 @@ eficient, thoughtout. As an example, this library uses
 throttle sending and receiving messages instead of the builtin
 `GenStage`.
 
-**WARNING: Using `nsqlookupds` with this library for consumers make
-the tests fail. Exercise caution and safety.**
-
 ## Installation
 
 The package can be installed by adding `conduit_nsq` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:conduit_nsq, "~> 0.1.1"}]
+  [{:conduit_nsq, "~> 0.1.4"}]
 end
 ```
 
@@ -57,9 +54,7 @@ config :my_app, MyApp.Broker,
     "127.0.0.1:13150",
     "127.0.0.1:14150"
   ],
-
-  # AVOID FOR NOW, see warning above
-  # nsqlookupds: ["127.0.0.1:12161"],
+  nsqlookupds: ["127.0.0.1:12161"],
 
   backoff_multiplier: 2_000
 ```
@@ -116,10 +111,13 @@ All topics that the application will publish to must be defined here
 since each message is routed to the corresponding
 `NSQ.Producer.Supervisor` otherwise the message might be unsent.
 
-### Options
+### Ephemeral Topics or Channels
 
-- `:ephemeral` (Optional: `false`) - Adds `#ephemeral` to the topic to
-  mark it as ephemeral. (See [NSQ Design](https://nsq.io/overview/design.html#bounded-memory-footprint))
+You can suffix topics and channels with `#ephemeral` based on [bounded
+memory
+footprint](https://nsq.io/overview/design.html#bounded-memory-footprint)).
+However, when publishing or subscribing to the topic, also add the
+same suffix to the topic or channel to match
 
 ## Configuring a Subscriber
 
@@ -149,8 +147,6 @@ The only required options are `:topic` and `:channel` which follows
 
 - `:topic` - Topic to connect with
 - `:channel` - Topic channel to listen into
-- `:ephemeral` (Optional: `false`) - Adds `#ephemeral` to the channel
-  name to mark it ephemeral. (See [NSQ Design](https://nsq.io/overview/design.html#bounded-memory-footprint))
 
 ## Configuring a Publisher
 

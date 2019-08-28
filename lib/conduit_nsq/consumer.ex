@@ -23,11 +23,6 @@ defmodule ConduitNSQ.Consumer do
     topic = Keyword.fetch!(sub_opts, :topic)
     channel = Keyword.fetch!(sub_opts, :channel)
 
-    ephemeral_suffix =
-      if Keyword.get(sub_opts, :ephemeral, false),
-        do: "#ephemeral",
-        else: ""
-
     timeout = Application.get_env(:conduit_nsq, :process_timeout, 60_000)
 
     handler = fn msg, _body ->
@@ -58,7 +53,7 @@ defmodule ConduitNSQ.Consumer do
         :start_link,
         [
           topic,
-          "#{channel}#{ephemeral_suffix}",
+          channel,
           config
         ]
       },
