@@ -105,7 +105,7 @@ defmodule BrokerSpec do
     it "should publish and receive messages" do
         ptest([original: choose(from: [list(of: string()), string()])], [repeat_for: 3]) do
           {:ok, :sent} = %Message{}
-          |> Message.put_body(original)
+         |> Message.put_body(original)
           |> Broker.publish(:my_sub)
 
           assert_receive {:my_process, sent_message}, 7_000

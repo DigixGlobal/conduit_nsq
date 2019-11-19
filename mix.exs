@@ -4,7 +4,7 @@ defmodule ConduitNSQ.MixProject do
   def project do
     [
       app: :conduit_nsq,
-      version: "0.1.4",
+      version: "0.1.5",
       elixir: "~> 1.9",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
@@ -28,7 +28,7 @@ defmodule ConduitNSQ.MixProject do
   defp elixirc_paths(_), do: ["lib"]
 
   def application do
-    [extra_applications: [:logger]]
+    [extra_applications: [:logger, :mnesia]]
   end
 
   defp deps do

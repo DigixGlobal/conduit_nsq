@@ -29,7 +29,7 @@ defmodule ConduitNSQ.MessagePublisher do
 
   @impl true
   def init(opts) do
-    workers = Keyword.get(opts, :publisher_workers, 5)
+    workers = Keyword.get(opts, :publisher_workers, 25)
 
     @queue_name
     |> Honeydew.start_queue(
